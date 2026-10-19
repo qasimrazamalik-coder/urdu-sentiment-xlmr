@@ -1,0 +1,36 @@
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+.ruff_cache/
+.ipynb_checkpoints/
+*.egg-info/
+build/
+dist/
+
+# data and weights are never committed
+data/
+checkpoints/
+models/
+*.pt
+*.pth
+*.ckpt
+*.safetensors
+*.onnx
+*.faiss
+*.index
+
+# run outputs: keep the folder, ignore bulky artifacts
+results/*
+!results/.gitkeep
+!results/*.json
+!results/*.md
+!results/mbert/
+results/mbert/*
+!results/mbert/*.json
+!results/mbert/*.md
+results/smoke/
+
+.env
+.DS_Store

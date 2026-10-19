@@ -1,0 +1,46 @@
+# Real run. Expects a CSV/JSONL with columns text,label (optional script) at data.path.
+seed: 42
+
+data:
+  source: file              # "file" for real data, "synthetic" for the generated fixture
+  path: data/raw/dataset.csv
+  val_size: 0.1
+  test_size: 0.2
+  dedupe: true              # exact duplicate texts would leak across splits
+  normalize: true           # same text normalisation for both models
+  min_chars: 2
+  synthetic_rows: 0         # only used when source is "synthetic"
+
+baseline:
+  classifier: logreg        # logreg | linsvm
+  c_grid: [0.1, 1.0, 10.0]  # chosen on the validation split only
+  word_ngram: [1, 2]
+  char_ngram: [2, 5]
+  max_features: 300000
+
+model:
+  enabled: true
+  source: pretrained        # pretrained | tiny_random (tests and smoke only)
+  name: xlm-roberta-base    # or bert-base-multilingual-cased, see configs/mbert.yaml
+  max_length: 128
+  epochs: 5
+  batch_size: 32
+  eval_batch_size: 64
+  learning_rate: 2.0e-5
+  weight_decay: 0.01
+  warmup_ratio: 0.1
+  patience: 2               # early stopping on validation macro-F1
+  fp16: true                # used only when CUDA is available
+  class_weighted_loss: false
+  num_threads: 0            # 0 keeps the torch default
+
+evaluation:
+  bootstrap_samples: 2000
+  short_max_words: 8        # texts up to this many words count as "short"
+  errors_top_k: 200
+  reference_model: baseline # the model the transformer is compared against
+
+output:
+  dir: results
+  model_dir: checkpoints/xlmr
+  baseline_path: checkpoints/baseline.joblib

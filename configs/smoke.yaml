@@ -1,0 +1,47 @@
+# Smoke run on SYNTHETIC template sentences with a tiny randomly initialised model.
+# It proves the code path works end to end. The numbers it writes are not results.
+seed: 7
+
+data:
+  source: synthetic
+  path: ""
+  val_size: 0.15
+  test_size: 0.25
+  dedupe: true
+  normalize: true
+  min_chars: 2
+  synthetic_rows: 600
+
+baseline:
+  classifier: logreg
+  c_grid: [1.0, 10.0]
+  word_ngram: [1, 2]
+  char_ngram: [2, 4]
+  max_features: 20000
+
+model:
+  enabled: true
+  source: tiny_random
+  name: tiny-random-char-bert
+  max_length: 48
+  epochs: 8
+  batch_size: 32
+  eval_batch_size: 64
+  learning_rate: 3.0e-3
+  weight_decay: 0.0
+  warmup_ratio: 0.1
+  patience: 8
+  fp16: false
+  class_weighted_loss: false
+  num_threads: 2
+
+evaluation:
+  bootstrap_samples: 200
+  short_max_words: 5
+  errors_top_k: 50
+  reference_model: baseline
+
+output:
+  dir: results/smoke
+  model_dir: checkpoints/smoke_model
+  baseline_path: checkpoints/smoke_baseline.joblib

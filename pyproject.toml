@@ -1,0 +1,51 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "urdu-sentiment-xlmr"
+version = "0.1.0"
+description = "Urdu and Roman Urdu sentiment classification: fine-tuned XLM-RoBERTa versus a TF-IDF linear baseline, with per-script error analysis."
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [{ name = "Qasim Raza Malik" }]
+dependencies = [
+  "numpy>=1.26",
+  "pandas>=2.1",
+  "scikit-learn>=1.4",
+  "pyyaml>=6.0",
+  "tqdm>=4.66",
+  "gradio>=6.0",
+  "joblib>=1.3",
+  "scipy>=1.11",
+  "torch>=2.1",
+  "transformers>=4.40",
+  "datasets>=2.19",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8.0", "ruff>=0.5"]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+src = ["src", "tests", "app"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP", "SIM", "RUF"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["app"]
+addopts = "-q"
+
+[tool.ruff.lint.per-file-ignores]
+# Urdu letters are the data here, so ambiguous-character warnings do not apply.
+"src/urdu_sentiment/data.py" = ["RUF001"]
+"src/urdu_sentiment/synthetic.py" = ["RUF001"]
+"app/app.py" = ["RUF001"]
+"tests/*" = ["RUF001"]
